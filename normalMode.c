@@ -9,7 +9,6 @@ extern char const wDelS[], wDelL[], *nmKeys[];
 extern unsigned int bg[], fg, currentBg, highlightBg, highlightFg, amountNmKeys;
 
 typedef struct { int p[3]; } Pos;
-
 typedef enum {visual='v', visualLine='V', yank = 'y'} Op;
 typedef enum {infix_none=0, infix_i='i', infix_a='a'} Infix;
 typedef enum {fw='/', bw='?'} Search;
@@ -17,7 +16,6 @@ struct NormalModeState {
 	struct OperationState { Op op; Infix infix; } cmd;
 	struct MotionState { uint32_t c; int active; Pos searchPos; Search search; } m;
 } defaultNormalMode, state;
-
 DynamicArray searchStr=UTF8_ARRAY, cCmd=UTF8_ARRAY, lCmd=UTF8_ARRAY;
 Glyph styleCmd;
 char posBuffer[10], braces[6][3] = { {"()"}, {"<>"}, {"{}"}, {"[]"}, {"\"\""}, {"''"}};
@@ -83,6 +81,7 @@ static ExitState executeCommand(uint32_t *cs, size_t z) {
 static void getChar(DynamicArray *st, Glyph *glyphChange, int y, int xEnd, int width, int x) {
 	if (x < xEnd - min(min(width,xEnd), size(st))) *glyphChange = term.line[y][x];
 	else if (x<xEnd) glyphChange->u = *((Rune*)(st->content + (size(st)+x-xEnd)*st->elSize));
+  overlay = !overlay ;
 }
 /// Expand "infix" expression: for instance (w =>)       l     b     |   | v     e    |   | y
 static ExitState expandExpression(char l) { //    ({ =>)       l  ?  {  \n | l | v  /  } \n | h | y
